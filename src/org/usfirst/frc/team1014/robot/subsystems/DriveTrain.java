@@ -20,32 +20,49 @@ public class DriveTrain extends Subsystem {
 		return instance;
 	}
 
-	SwerveWheel wheel1, wheel2, wheel3, wheel4;
+	SwerveWheel wheelA, wheelB, wheelC, wheelD;
 
 	private DriveTrain()
 	{
 		super();
-		wheel1 = new SwerveWheel(RobotMap.DRIVE_MOTOR_0, RobotMap.PIVOT_MOTOR_0, RobotMap.PIVOT_ENCODER_0A,
-				RobotMap.PIVOT_ENCODER_0B, ENCODER_CPR);
-		wheel2 = new SwerveWheel(RobotMap.DRIVE_MOTOR_1, RobotMap.PIVOT_MOTOR_1, RobotMap.PIVOT_ENCODER_1A,
-				RobotMap.PIVOT_ENCODER_1B, ENCODER_CPR);
-		wheel3 = new SwerveWheel(RobotMap.DRIVE_MOTOR_2, RobotMap.PIVOT_MOTOR_2, RobotMap.PIVOT_ENCODER_2A,
-				RobotMap.PIVOT_ENCODER_2B, ENCODER_CPR);
-		wheel4 = new SwerveWheel(RobotMap.DRIVE_MOTOR_3, RobotMap.PIVOT_MOTOR_3, RobotMap.PIVOT_ENCODER_3A,
-				RobotMap.PIVOT_ENCODER_3B, ENCODER_CPR);
+		wheelA = new SwerveWheel(RobotMap.DRIVE_MOTOR_A, RobotMap.PIVOT_MOTOR_A, RobotMap.PIVOT_ENCODER_AA,
+				RobotMap.PIVOT_ENCODER_AB, ENCODER_CPR);
+		wheelB = new SwerveWheel(RobotMap.DRIVE_MOTOR_B, RobotMap.PIVOT_MOTOR_B, RobotMap.PIVOT_ENCODER_BA,
+				RobotMap.PIVOT_ENCODER_BB, ENCODER_CPR);
+		wheelC = new SwerveWheel(RobotMap.DRIVE_MOTOR_C, RobotMap.PIVOT_MOTOR_C, RobotMap.PIVOT_ENCODER_CA,
+				RobotMap.PIVOT_ENCODER_CB, ENCODER_CPR);
+		wheelD = new SwerveWheel(RobotMap.DRIVE_MOTOR_D, RobotMap.PIVOT_MOTOR_D, RobotMap.PIVOT_ENCODER_DA,
+				RobotMap.PIVOT_ENCODER_DB, ENCODER_CPR);
 	}
 
 	public void drive(double rotation, Vector2d translation)
 	{
-		double a = translation.getX() - rotation * L / 2;
-		double b = translation.getX() + rotation * L / 2;
-		double c = translation.getY() - rotation * W / 2;
-		double d = translation.getY() + rotation * W / 2;
+		if(Math.abs(rotation) < .2)
+			rotation = 0;
+		if(Math.abs(translation.getY()) < .2)
+			translation.setY(0);
+		if(Math.abs(translation.getX()) < .2)
+			translation.setX(0);
+		
+		rotation *= -1;
+		
+		double angleAVG = wheelA.getAngle();
+		angleAVG += rotation;
+		System.out.print("AVG: " + angleAVG + " ");
 
-		wheel1.drive(Math.atan2(b, c), speed(b, c));
-		wheel2.drive(Math.atan2(b, d), speed(b, d));
-		wheel3.drive(Math.atan2(a, d), speed(a, d));
-		wheel4.drive(Math.atan2(a, c), speed(a, c));
+		wheelA.drive(rotation, translation.getY(), 1);
+		wheelB.drive(angleAVG - wheelB.getAngle(), translation.getY(), 2);
+		wheelC.drive(angleAVG - wheelC.getAngle(), translation.getY(), 2);
+		wheelD.drive(angleAVG - wheelD.getAngle(), translation.getY(), 2);
+		
+		System.out.println();
+	}
+	
+	public void center() {
+		wheelA.center();
+		wheelB.center();
+		wheelC.center();
+		wheelD.center();
 	}
 
 	private double speed(double x, double y)

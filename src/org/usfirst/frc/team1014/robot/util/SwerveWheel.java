@@ -29,17 +29,20 @@ public class SwerveWheel {
 		encoder = new Encoder(encoderAPin, encoderBPin);
 	}
 
-	public void drive(double angle, double speed)
+	public void drive(double angle, double speed, int id)
 	{
-		double physical_angle = getAngle();
-		double turn_speed = (-2d * Math.atan(ANGLE_DIFF_COEFFICIENT * (physical_angle - angle))) / Math.PI;
-		System.out.println(getAngle());
-		//driveSpeedController.set(speed);
+		double turn_speed = angle;
+		System.out.print(id + ": [" + getAngle() + " " + id + "R: " + angle + "] ");
+		driveSpeedController.set(speed);
 		swerveSpeedController.set(turn_speed);
 	}
+	
+	public void center() {
+		encoder.reset();
+	}
 
-	private double getAngle()
+	public double getAngle()
 	{
-		return 2*Math.PI*((double) encoder.get()) / encoderCPR;
+		return ((double) encoder.get()) / encoderCPR;
 	}
 }

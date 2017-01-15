@@ -16,6 +16,8 @@ public class TeleDrive extends Command {
 	@Override
 	public void execute()
 	{
+		if(OI.xboxController0.isAButtonPressed())
+			DriveTrain.getInstance().center();
 		DriveTrain.getInstance().drive(OI.xboxController0.getRawAxis(0), new Vector2d(OI.xboxController0.getRawAxis(4), -OI.xboxController0.getRawAxis(5)));
 	}
 
