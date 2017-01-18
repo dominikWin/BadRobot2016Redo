@@ -51,9 +51,9 @@ public class DriveTrain extends Subsystem {
 		System.out.print("AVG: " + angleAVG + " ");
 
 		wheelA.drive(rotation, translation.getY(), 1);
-		wheelB.drive(angleAVG - wheelB.getAngle(), translation.getY(), 2);
-		wheelC.drive(angleAVG - wheelC.getAngle(), translation.getY(), 2);
-		wheelD.drive(angleAVG - wheelD.getAngle(), translation.getY(), 2);
+//		wheelB.drive(angleAVG - wheelB.getAngle(), translation.getY(), 2);
+//		wheelC.drive(angleAVG - wheelC.getAngle(), translation.getY(), 2);
+//		wheelD.drive(angleAVG - wheelD.getAngle(), translation.getY(), 2);
 		
 		System.out.println();
 	}

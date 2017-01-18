@@ -31,10 +31,18 @@ public class SwerveWheel {
 
 	public void drive(double angle, double speed, int id)
 	{
-		double turn_speed = angle;
+		double turn_speed = rotateFunc(angle);
 		System.out.print(id + ": [" + getAngle() + " " + id + "R: " + angle + "] ");
 		driveSpeedController.set(speed);
 		swerveSpeedController.set(turn_speed);
+	}
+	
+	private double rotateFunc(double angle) {
+		angle -= getAngle();
+		angle = angle % 1d;
+		if(angle > .5)
+			angle--;
+		return angle * 2d;
 	}
 	
 	public void center() {
