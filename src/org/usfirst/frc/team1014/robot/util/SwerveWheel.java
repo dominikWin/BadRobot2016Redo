@@ -33,7 +33,7 @@ public class SwerveWheel {
 	public void drive(double angle, double speed, int id, SpeedControllerNormalizer normalizer) {
 		angle /= 2d * Math.PI;
 		double turn_speed = rotateFunc(angle);
-		System.out.print(id + ": [" + getAngle() + " " + id + "R: " + angle + "] ");
+//		System.out.print(id + ": [" + getAngle() + " " + id + "R: " + angle + "] ");
 		if ((angle - getAngle()) % 1 > .25 && (angle - getAngle()) % 1 < .75)
 			speed = -speed;
 		normalizer.add(driveSpeedController, speed);

@@ -52,17 +52,20 @@ public class DriveTrain extends Subsystem {
 		if(Math.abs(translation.getX()) < .2)
 			translation.setX(0);
 		
-//		double robotAngle = Math.toRadians(imu.getYaw());
-//		
-//		System.out.println("ANGLE: " + robotAngle);
-//		
-//		double x = translation.getX();
-//		double y = translation.getY();
-//		x = x * Math.cos(robotAngle) - y * Math.sin(robotAngle);
-//		y = y * Math.cos(robotAngle) + x * Math.sin(robotAngle);
-//		
-//		translation.setX(x);
-//		translation.setY(y);
+		double robotAngle = Math.toRadians(imu.getYaw());
+		
+		System.out.println("ANGLE: " + robotAngle);
+		System.out.println("IN: " + translation);
+		
+		double x;
+		double y;
+		x = translation.getX() * Math.cos(robotAngle) - translation.getY() * Math.sin(robotAngle);
+		y = translation.getY() * Math.cos(robotAngle) + translation.getX() * Math.sin(robotAngle);
+		
+		translation.setX(x);
+		translation.setY(y);
+		
+		System.out.println("OUT: " + translation);
 		
 		double a = translation.getX() - rotation * L / 2;
 		double b = translation.getX() + rotation * L / 2;
@@ -78,6 +81,10 @@ public class DriveTrain extends Subsystem {
 		normalizer.clear();
 		
 		System.out.println();
+	}
+	
+	public void zeroRotation() {
+		imu.zeroYaw();
 	}
 	
 	public void center() {
