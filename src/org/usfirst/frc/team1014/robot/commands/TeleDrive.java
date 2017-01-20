@@ -9,34 +9,30 @@ import edu.wpi.first.wpilibj.command.Command;
 public class TeleDrive extends Command {
 
 	@Override
-	protected void end()
-	{
+	protected void end() {
 	}
 
 	@Override
-	public void execute()
-	{
-		if(OI.xboxController0.isAButtonPressed())
+	public void execute() {
+		if (OI.xboxController0.isAButtonPressed())
 			DriveTrain.getInstance().center();
 		double rotation = OI.xboxController0.getRawAxis(0);
-//		rotation = (rotation +1d) /2d;
-		DriveTrain.getInstance().drive(rotation, new Vector2d(OI.xboxController0.getRawAxis(4), -OI.xboxController0.getRawAxis(5)));
+		// rotation = (rotation +1d) /2d;
+		DriveTrain.getInstance().drive(rotation,
+				new Vector2d(OI.xboxController0.getRawAxis(4), -OI.xboxController0.getRawAxis(5)));
 	}
 
 	@Override
-	protected void initialize()
-	{
+	protected void initialize() {
 		requires(DriveTrain.getInstance());
 	}
 
 	@Override
-	protected void interrupted()
-	{
+	protected void interrupted() {
 	}
 
 	@Override
-	protected boolean isFinished()
-	{
+	protected boolean isFinished() {
 		return false;
 	}
 
