@@ -1,5 +1,7 @@
 package org.usfirst.frc.team1014.robot.util;
 
+import org.opencv.core.Mat;
+
 import com.ctre.CANTalon;
 
 import edu.wpi.first.wpilibj.Encoder;
@@ -29,20 +31,25 @@ public class SwerveWheel {
 		encoder = new Encoder(encoderAPin, encoderBPin);
 	}
 
-	public void drive(double angle, double speed, int id)
+	public void drive(double angle, double speed, int id, SpeedControllerNormalizer normalizer)
 	{
+		angle /= 2d*Math.PI;
 		double turn_speed = rotateFunc(angle);
 		System.out.print(id + ": [" + getAngle() + " " + id + "R: " + angle + "] ");
-		driveSpeedController.set(speed);
+		if(angle - getAngle() > .25 && angle - getAngle() < .75)
+			speed = -speed;
+		normalizer.add(driveSpeedController, speed);
 		swerveSpeedController.set(turn_speed);
 	}
 	
 	private double rotateFunc(double angle) {
 		angle -= getAngle();
 		angle = angle % 1d;
-		if(angle > .5)
-			angle--;
-		return angle * 2d;
+		if(angle < .25)
+			return angle * 4;
+		if(angle > .75)
+			return (angle -1) * 4;
+		return (angle - .5) *4;
 	}
 	
 	public void center() {

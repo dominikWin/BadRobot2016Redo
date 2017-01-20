@@ -2,9 +2,11 @@
 package org.usfirst.frc.team1014.robot.subsystems;
 
 import org.usfirst.frc.team1014.robot.RobotMap;
+import org.usfirst.frc.team1014.robot.util.SpeedControllerNormalizer;
 import org.usfirst.frc.team1014.robot.util.SwerveWheel;
 import org.usfirst.frc.team1014.robot.util.Vector2d;
 
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class DriveTrain extends Subsystem {
@@ -12,6 +14,7 @@ public class DriveTrain extends Subsystem {
 	private static final double ENCODER_CPR = 414.1666d;
 	private static final double L = 1, W = 1;
 	private static DriveTrain instance;
+	SpeedControllerNormalizer normalizer;
 
 	public static DriveTrain getInstance()
 	{
@@ -21,6 +24,8 @@ public class DriveTrain extends Subsystem {
 	}
 
 	SwerveWheel wheelA, wheelB, wheelC, wheelD;
+	IMU imu;
+	SerialPort mxpPort;
 
 	private DriveTrain()
 	{
@@ -33,6 +38,9 @@ public class DriveTrain extends Subsystem {
 				RobotMap.PIVOT_ENCODER_CB, ENCODER_CPR);
 		wheelD = new SwerveWheel(RobotMap.DRIVE_MOTOR_D, RobotMap.PIVOT_MOTOR_D, RobotMap.PIVOT_ENCODER_DA,
 				RobotMap.PIVOT_ENCODER_DB, ENCODER_CPR);
+		mxpPort = new SerialPort(57600, SerialPort.Port.kMXP);
+		imu = new IMU(mxpPort, (byte) 127);
+		normalizer = new  SpeedControllerNormalizer();
 	}
 
 	public void drive(double rotation, Vector2d translation)
@@ -44,16 +52,30 @@ public class DriveTrain extends Subsystem {
 		if(Math.abs(translation.getX()) < .2)
 			translation.setX(0);
 		
-		rotation *= -1;
+//		double robotAngle = Math.toRadians(imu.getYaw());
+//		
+//		System.out.println("ANGLE: " + robotAngle);
+//		
+//		double x = translation.getX();
+//		double y = translation.getY();
+//		x = x * Math.cos(robotAngle) - y * Math.sin(robotAngle);
+//		y = y * Math.cos(robotAngle) + x * Math.sin(robotAngle);
+//		
+//		translation.setX(x);
+//		translation.setY(y);
 		
-		double angleAVG = wheelA.getAngle();
-		angleAVG += rotation;
-		System.out.print("AVG: " + angleAVG + " ");
+		double a = translation.getX() - rotation * L / 2;
+		double b = translation.getX() + rotation * L / 2;
+		double c = translation.getY() - rotation * W / 2;
+		double d = translation.getY() + rotation * W / 2;
 
-		wheelA.drive(rotation, translation.getY(), 1);
-//		wheelB.drive(angleAVG - wheelB.getAngle(), translation.getY(), 2);
-//		wheelC.drive(angleAVG - wheelC.getAngle(), translation.getY(), 2);
-//		wheelD.drive(angleAVG - wheelD.getAngle(), translation.getY(), 2);
+		wheelA.drive(-Math.atan2(b, c), speed(b, c), 1, normalizer);
+		wheelB.drive(-Math.atan2(b, d), speed(b, d), 2, normalizer);
+		wheelC.drive(-Math.atan2(a, d), speed(a, d), 3, normalizer);
+		wheelD.drive(-Math.atan2(a, c), speed(a, c), 4, normalizer);
+		
+		normalizer.run();
+		normalizer.clear();
 		
 		System.out.println();
 	}
