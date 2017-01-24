@@ -43,7 +43,7 @@ public class DriveTrain extends Subsystem {
 		normalizer = new  SpeedControllerNormalizer();
 	}
 
-	public void drive(double rotation, Vector2d translation)
+	public void drive(double rotation, Vector2d translation, boolean fieldCentric)
 	{
 		if(Math.abs(rotation) < .2)
 			rotation = 0;
@@ -57,14 +57,14 @@ public class DriveTrain extends Subsystem {
 		System.out.println("ANGLE: " + robotAngle);
 		System.out.println("IN: " + translation);
 		
-		double x;
-		double y;
-		x = translation.getX() * Math.cos(robotAngle) - translation.getY() * Math.sin(robotAngle);
-		y = translation.getY() * Math.cos(robotAngle) + translation.getX() * Math.sin(robotAngle);
-		
-		translation.setX(x);
-		translation.setY(y);
-		
+		if (fieldCentric) {
+			double x;
+			double y;
+			x = translation.getX() * Math.cos(robotAngle) - translation.getY() * Math.sin(robotAngle);
+			y = translation.getY() * Math.cos(robotAngle) + translation.getX() * Math.sin(robotAngle);
+			translation.setX(x);
+			translation.setY(y);
+		}
 		System.out.println("OUT: " + translation);
 		
 		double a = translation.getX() - rotation * L / 2;
